@@ -1,0 +1,32 @@
+stages:
+  preprocess:
+    cmd: python preprocess.py --input data/earthquake_alert_balanced_dataset.csv --output data/processed/train_data.csv --output-test data/processed/test_data.csv
+    deps:
+      - preprocess.py
+      - data/earthquake_alert_balanced_dataset.csv
+    outs:
+      - data/processed/train_data.csv
+      - data/processed/test_data.csv
+
+  train:
+    cmd: python train.py --train-data data/processed/train_data.csv --model-out models/model.pkl 
+    deps:
+      - train.py
+      - data/processed/train_data.csv
+    outs:
+      - models/model.pkl
+    metrics:
+      - metrics/train_metrics.json
+    plots:
+      - plots/train_loss.png
+
+  validate:
+    cmd: python validate.py --model models/model.pkl --test-data data/processed/test_data.csv --metrics-out metrics/val_metrics.json --plot-out plots/confusionmatrix.png
+    deps:
+      - validate.py
+      - models/model.pkl
+      - data/processed/test_data.csv
+    metrics:
+      - metrics/val_metrics.json
+    plots:
+      - plots/confusionmatrix.png
