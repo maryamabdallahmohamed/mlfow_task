@@ -1,26 +1,26 @@
 stages:
   preprocess:
-    cmd: python preprocess.py --input data/earthquake_alert_balanced_dataset.csv --output data/processed/train_data.csv --output-test data/processed/test_data.csv --output-val data/processed/val_data.csv
+    cmd: python3 preprocess.py --input data/earthquake_alert_balanced_dataset.csv --output data/train_data.csv --output-test data/test_data.csv 
     deps:
       - preprocess.py
       - data/earthquake_alert_balanced_dataset.csv
     outs:
-      - data/processed/train_data.csv
-      - data/processed/test_data.csv
-      - data/processed/val_data.csv
+      - data/train_data.csv
+      - data/test_data.csv
+
 
   train:
-    cmd: python train.py --train-data data/processed/train_data.csv --model-out models/model.pkl 
+    cmd: python3 train.py --train-data data/train_data.csv --model-out nn_model.joblib 
     deps:
       - train.py
-      - data/processed/train_data.csv
+      - data/train_data.csv
     outs:
-      - models/model.pkl
+      - nn_model.joblib
 
 
   tune:
-    cmd: python tune.py --model models/model.pkl --test-data data/processed/test_data.csv 
+    cmd: python tune.py --model nn_model.joblib --test-data data/test_data.csv 
     deps:
       - tune.py
-      - models/model.pkl
-      - data/processed/test_data.csv
+      - nn_model.joblib
+      - data/test_data.csv

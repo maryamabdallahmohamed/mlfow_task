@@ -1,0 +1,56 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python3 preprocess.py --input 
+      data/earthquake_alert_balanced_dataset.csv --output data/train_data.csv 
+      --output-test data/test_data.csv
+    deps:
+    - path: data/earthquake_alert_balanced_dataset.csv
+      hash: md5
+      md5: b21a0ae34ece1a7e44822b96e129bddf
+      size: 43662
+    - path: preprocess.py
+      hash: md5
+      md5: 74270e6a8fabd4c246f2b07e1804193a
+      size: 585
+    outs:
+    - path: data/test_data.csv
+      hash: md5
+      md5: 6552fa211347292f824919588c3451f2
+      size: 1301
+    - path: data/train_data.csv
+      hash: md5
+      md5: 0dedd098e7a98ada38837d22a99519d5
+      size: 131431
+  train:
+    cmd: python3 train.py --train-data data/train_data.csv --model-out 
+      nn_model.joblib
+    deps:
+    - path: data/train_data.csv
+      hash: md5
+      md5: 0dedd098e7a98ada38837d22a99519d5
+      size: 131431
+    - path: train.py
+      hash: md5
+      md5: d9e052e000e7588392baa9010e6a356d
+      size: 1448
+    outs:
+    - path: nn_model.joblib
+      hash: md5
+      md5: 15f6c21403c25e34b17a171eb4794cb1
+      size: 202032
+  tune:
+    cmd: python tune.py --model nn_model.joblib --test-data data/test_data.csv
+    deps:
+    - path: data/test_data.csv
+      hash: md5
+      md5: 6552fa211347292f824919588c3451f2
+      size: 1301
+    - path: nn_model.joblib
+      hash: md5
+      md5: 15f6c21403c25e34b17a171eb4794cb1
+      size: 202032
+    - path: tune.py
+      hash: md5
+      md5: 582f44689d82522c90224fcc77b0b18c
+      size: 1275
